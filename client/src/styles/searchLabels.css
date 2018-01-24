@@ -1,0 +1,10 @@
+#search-value {
+	width: 104%;
+	margin-left: -2%;
+	border-color: #5a7391;
+	font-size: 20px;
+}
+
+.form-control-feedback, .form-control{
+	color: #5a7391;
+}

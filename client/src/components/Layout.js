@@ -53,7 +53,7 @@ class Layout extends Component {
                     Browse Files </Link>
                   </li>
                   <li>
-                    <Link to="/labels">
+                    <Link to="/search-labels">
                     <i className="glyphicon glyphicon-search"></i>
                     Rekognition Labels </Link>
                   </li>
