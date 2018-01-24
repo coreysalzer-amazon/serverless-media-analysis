@@ -31,23 +31,48 @@ class Upload extends Component {
 
   onFormSubmit(e) {
   	e.preventDefault();
+	document.getElementById("preview").style.opacity = .2;
+	document.getElementById("loader-container").className = document.getElementById("loader-container").className.replace("hidden", "");
+
     Storage.put(this.state.file.name, this.state.file)
-        .then (result => console.log(result))
+        .then (function(result) {
+        	console.log(result);
+        	document.getElementById("status").innerHTML = "Analyzing";
+        	//this.getLabels();
+
+        })
         .catch(err => console.log(err));
+
   }
 
   render() {
     return (
-    	<form onSubmit={this.onFormSubmit}>
-    		<div className="preview-container">
-    			<img id="preview" src={ preview }></img>
-    			<h1 id="file-name"></h1>
-    		</div>
-			<label id="file-input-container" className="btn btn-lg btn-info btn-file">
-			    Choose Photo or Video File <input id="file-input" type="file" accept="image/*, video/*" onChange={this.onChange}/>
-			</label>
-		    <button id="upload" className="hidden btn btn-success btn-lg" type="submit">Upload</button>
-		</form>
+    	<div>
+	    	<div className="col-sm-9">
+	    		<form onSubmit={this.onFormSubmit}>
+		    		<div className="preview-container">
+		    			<div id="loader-container" className="hidden">
+			    			<div className="col-xs-12">
+			    				<div className="loader"></div>
+			    			</div>
+			    			<strong id="status" className="title col-xs-12">Uploading</strong>
+			    		</div>
+		    			<img id="preview" src={ preview }></img>
+		    			<h1 className="title" id="file-name"></h1>
+		    		</div>
+					<label id="file-input-container" className="btn btn-lg btn-info btn-file">
+					    Choose Photo or Video File <input id="file-input" type="file" accept="image/*, video/*" onChange={this.onChange}/>
+					</label>
+				    <button id="upload" className="hidden btn btn-success btn-lg" type="submit">Upload</button>
+				</form>
+			</div>
+			<div className='col-sm-3'>
+				<div className="labels-container-title">
+					<strong className="title">Labels</strong>
+				</div>
+				<div className="labels-results"></div>
+			</div>
+		</div>
     );
   }
 }
