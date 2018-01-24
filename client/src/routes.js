@@ -2,7 +2,8 @@ import React from 'react';
 import { Router, Route, browserHistory } from 'react-router';
 
 import App from './pages/App';
-import Upload from './pages/Upload'
+import Upload from './pages/Upload';
+import SearchLabels from './pages/SearchLabels';
 import NotFound from './pages/NotFound';
 
 
@@ -11,6 +12,7 @@ export default (
 		<Route component={App}>
 			<Route path="/" component={Upload}/>
 			<Route path="/upload" component={Upload}/>
+			<Route path="/search-labels" component={SearchLabels}/>
 		</Route>
 		<Route path="*" component={NotFound} />
 	</Router>
