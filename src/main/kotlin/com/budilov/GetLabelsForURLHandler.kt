@@ -26,7 +26,7 @@ import java.util.*
  *
  */
 
-class GetLabelsForURLHandler : RequestHandler<ApigatewayRequest.Input, SearchPhotosHandler.SearchResponse> {
+class GetLabelsForURLHandler : RequestHandler<ApigatewayRequest.Input, GetLabelsForURLHandler.SearchResponse> {
     private val esService = ESPictureService()
     private val s3Service = S3Service()
     private val searchKeyName = "search-key"
@@ -38,7 +38,7 @@ class GetLabelsForURLHandler : RequestHandler<ApigatewayRequest.Input, SearchPho
                               val headers: MutableMap<String, String>?,
                               val body: String)
 
-    data class ResponseBody(val message: String, val labels: List<String>)
+    data class ResponseBody(val message: String, val labels: List<String>?)
 
     /**
      * 1. Get the request from API Gateway. Unmarshal (automatically) the request
@@ -59,7 +59,7 @@ class GetLabelsForURLHandler : RequestHandler<ApigatewayRequest.Input, SearchPho
 
             if(pictureList.size == 1) {
               val picture = pictureList[0]
-              val labels: List<String> = picture.labels;
+              val labels: List<String>? = picture.labels;
               logger?.log("labels: " + labels)
               val headers: MutableMap<String, String> = HashMap()
               headers.put("Content-Type", "application/json")
