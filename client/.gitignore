@@ -22,6 +22,6 @@ yarn-debug.log*
 yarn-error.log*
 
 #awsmobilejs
-awsmobilejs/.awsmobile/info/project-info.json
+awsmobilejs/.awsmobile/info
 awsmobilejs/.awsmobile/backend-build
 awsmobilejs/\#current-backend-info
