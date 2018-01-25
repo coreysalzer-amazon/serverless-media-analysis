@@ -67,10 +67,13 @@ class SearchPhotosHandler : RequestHandler<ApigatewayRequest.Input, SearchPhotos
             }
             val headers: MutableMap<String, String> = HashMap()
             headers.put("Content-Type", "application/json")
+            headers.put("Access-Control-Allow-Origin", "*")
 
             return SearchResponse(200, headers, Gson().toJson(ResponseBody("Success", pictureList)))
         }
-        return SearchResponse(400, null, """{"message":"$_RESPONSE_EMPTY"}""")
+        val headers: MutableMap<String, String> = HashMap()
+        headers.put("Access-Control-Allow-Origin", "*")
+        return SearchResponse(400, headers, """{"message":"$_RESPONSE_EMPTY"}""")
     }
 
     /**
@@ -83,7 +86,8 @@ class SearchPhotosHandler : RequestHandler<ApigatewayRequest.Input, SearchPhotos
         val idRequest = GetIdRequest()
         idRequest.accountId = Properties._ACCOUNT_NUMBER
         idRequest.identityPoolId = Properties._COGNITO_POOL_ID
-        idRequest.logins = mapOf(Pair(Properties._COGNITO_POOL_ID_IDP_NAME, authToken))
+        idRequest.logins = mapOf(Pair(Properties.eifjccfuvddtlehfrjcnntrtvrehkerlicvvvrultlfc
+        , authToken))
 
         identityClient.setRegion(Region.getRegion(Regions.fromName(Properties._REGION)))
         val idResp = identityClient.getId(idRequest)
