@@ -66,7 +66,7 @@ class GetLabelsForURLHandler : RequestHandler<ApigatewayRequest.Input, GetLabels
               headers.put("Access-Control-Allow-Origin", "*")
               headers.put("Access-Control-Allow-Credentials", "true");
               headers.put("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-              headers.put("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+              headers.put("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, search-key");
 
               return SearchResponse(200, headers, Gson().toJson(ResponseBody("Success", labels)))
             }
@@ -75,7 +75,7 @@ class GetLabelsForURLHandler : RequestHandler<ApigatewayRequest.Input, GetLabels
         headers.put("Access-Control-Allow-Origin", "*")
         headers.put("Access-Control-Allow-Credentials", "true");
         headers.put("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-        headers.put("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+        headers.put("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, search-key");
         return SearchResponse(400, headers, """{"message":"$_RESPONSE_EMPTY"}""")
     }
 
