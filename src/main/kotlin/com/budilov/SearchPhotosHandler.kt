@@ -86,8 +86,7 @@ class SearchPhotosHandler : RequestHandler<ApigatewayRequest.Input, SearchPhotos
         val idRequest = GetIdRequest()
         idRequest.accountId = Properties._ACCOUNT_NUMBER
         idRequest.identityPoolId = Properties._COGNITO_POOL_ID
-        idRequest.logins = mapOf(Pair(Properties.eifjccfuvddtlehfrjcnntrtvrehkerlicvvvrultlfc
-        , authToken))
+        idRequest.logins = mapOf(Pair(Properties._COGNITO_POOL_ID_IDP_NAME, authToken))
 
         identityClient.setRegion(Region.getRegion(Regions.fromName(Properties._REGION)))
         val idResp = identityClient.getId(idRequest)
