@@ -64,12 +64,18 @@ class GetLabelsForURLHandler : RequestHandler<ApigatewayRequest.Input, GetLabels
               val headers: MutableMap<String, String> = HashMap()
               headers.put("Content-Type", "application/json")
               headers.put("Access-Control-Allow-Origin", "*")
+              headers.put("Access-Control-Allow-Credentials", "true");
+              headers.put("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+              headers.put("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
 
               return SearchResponse(200, headers, Gson().toJson(ResponseBody("Success", labels)))
             }
         }
         val headers: MutableMap<String, String> = HashMap()
         headers.put("Access-Control-Allow-Origin", "*")
+        headers.put("Access-Control-Allow-Credentials", "true");
+        headers.put("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        headers.put("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
         return SearchResponse(400, headers, """{"message":"$_RESPONSE_EMPTY"}""")
     }
 
