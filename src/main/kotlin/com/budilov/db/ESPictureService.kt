@@ -78,13 +78,32 @@ class ESPictureService : DBPictureService {
      * returns List<PictureItem>
      */
     override fun search(userId: String, query: String): List<PictureItem> {
-        val matchAllQuery = getMatchAllQuery(query)
+        var matchAllQuery = ""
+        var search = null
 
-        val search = Search.Builder(matchAllQuery)
+        if(query.contains(Properties._BUCKET_URL)) {
+            matchAllQuery = getMatchAllQueryS3BucketURL()
+            search = Search.Builder(matchAllQuery)
                 // multiple index or types can be added.
                 .addIndex(_DEFAULT_INDEX)
                 .addType(userId)
                 .build()
+        }
+        else if(query.contains(userId)) {
+            matchAllQuery = getMatchAllQueryUserId()
+            search = Search.Builder(matchAllQuery)
+                // multiple index or types can be added.
+                .addIndex(_DEFAULT_INDEX)
+                .build()
+        }
+        else {
+            matchAllQuery = getMatchAllQueryLabels()
+            search = Search.Builder(matchAllQuery)
+                // multiple index or types can be added.
+                .addIndex(_DEFAULT_INDEX)
+                .addType(userId)
+                .build()
+        }
 
         val result = client.execute(search)
 
@@ -107,8 +126,16 @@ class ESPictureService : DBPictureService {
         return result.isSucceeded
     }
 
-    private fun getMatchAllQuery(labels: String, pageSize: Int = 30): String {
+    private fun getMatchAllQueryLabels(labels: String, pageSize: Int = 30): String {
         return """{"query": { "match": { "labels": "$labels" } }, "size":$pageSize}"""
+    }
+
+    private fun getMatchAllQueryS3BucketUrl(s3BucketUrl: String, pageSize: Int = 30): String {
+        return """{"query": { "match": { "s3BucketUrl": "$s3BucketUrl" } }, "size":$pageSize}"""
+    }
+
+    private fun getMatchAllQueryUserId(userId: String, pageSize: Int = 30): String {
+        return """{"query": { "match": { "Mappings": "$userId" } }, "size":$pageSize}"""
     }
 
     private fun getJestFactory(requestInterceptor: AWSSigningRequestInterceptor): JestClientFactory {

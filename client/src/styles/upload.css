@@ -26,7 +26,22 @@
 }
 
 .labels-container-title {
-	border-bottom: 1px solid #dadada;
+	padding-top: 25px;
+    padding-bottom: 5px;
+    font-size: 24px;
+}
+
+.labels {
+	padding-top: 15px;
+    border: 1px solid #5a7391;
+    font-size: 18px;
+}
+
+.label-name {
+	color: #5b9bd1;
+	word-wrap: break-word;
+	display: block;
+	padding: 0 10px;
 }
 
 #loader-container {
