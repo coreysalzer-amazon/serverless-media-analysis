@@ -5,6 +5,21 @@ import "../styles/upload.css";
 import preview from '../img/preview.jpg';
 import axios from 'axios';
 
+var LabelsList = React.createClass({
+    render: function() {
+		var listComponents = this.props.labels.map(function(label) {
+            return(
+            	<div className="labels" key={label}>
+            		<i className="label-name">{label}</i>
+        		</div>
+        	);
+        });
+        if(listComponents.length == 0) {
+        	listComponents = <div className="labels"></div>;
+        }
+        return <div>{listComponents}</div>;
+    }
+});
 
 class Upload extends Component {
   constructor(props) {
@@ -13,6 +28,10 @@ class Upload extends Component {
     this.onChange = this.onChange.bind(this);
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.getLabels = this.getLabels.bind(this);
+  }
+
+  componentDidMount() {
+  	this.setState({labels:[]});
   }
 
   onChange(e) {
@@ -52,27 +71,32 @@ class Upload extends Component {
   	var idToken = Auth.credentials.params.Logins["cognito-idp.us-east-1.amazonaws.com/us-east-1_BIhRQnDpw"];
   	var fileURL = 'rekognition-20180119151350.rekognition-20180119151350-us-east-1.amazonaws.com/usercontent/private/' + Auth.credentials.data.IdentityId + "/" + this.state.file.name;
 
-  	axios.post('https://1rksbard2i.execute-api.us-east-1.amazonaws.com/prod/picture/search/', "", {
-	    headers: {
-	    	"Authorization": idToken,
-	    	"search-key": "rekognition-20180119151350.rekognition-20180119151350-us-east-1.amazonaws.com/usercontent/us-east-1:0b43b02c-917d-4567-9af6-bafb9d93335f/new-york.jpg"
-	    }
-	  })
-	  .then(function (response) {
-	    if(true /*has labels*/) {
-	    	console.log(response);
-	    } 
-	    else {
-	    	setTimeout(this.getLabels, 800);
-	    }
-	  })
-	  .catch(function (error) {
-	    console.log(error);
-	  });
+  	// axios.post('https://1rksbard2i.execute-api.us-east-1.amazonaws.com/prod/picture/search/', "", {
+	  //   headers: {
+	  //   	"Authorization": idToken,
+	  //   	"search-key": "rekognition-20180119151350.rekognition-20180119151350-us-east-1.amazonaws.com/usercontent/us-east-1:0b43b02c-917d-4567-9af6-bafb9d93335f/new-york.jpg"
+	  //   }
+	  // })
+	  // .then(function (response) {
+	  //   if(true /*has labels*/) {
+	  //   	console.log(response);
+	  //   } 
+	  //   else {
+	  //   	setTimeout(this.getLabels, 800);
+	  //   }
+	  // })
+	  // .catch(function (error) {
+	  //   console.log(error);
+	  // });
+	  document.getElementById("loader-container").className = document.getElementById("loader-container").className + " hidden";
+	  var testLabels = ["Building", "photo", "person"];
+	  this.setState({labels:testLabels});
   }
 
-
   render() {
+  	var labels = []
+  	if(this.state) { labels = this.state.labels; }
+  	
     return (
     	<div>
 	    	<div className="col-sm-9">
@@ -97,7 +121,9 @@ class Upload extends Component {
 				<div className="labels-container-title">
 					<strong className="title">Labels</strong>
 				</div>
-				<div className="labels-results"></div>
+				<div className="labels-results">
+					<LabelsList labels={labels} />
+				</div>
 			</div>
 		</div>
     );
