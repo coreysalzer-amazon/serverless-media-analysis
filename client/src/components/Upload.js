@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { S3Image } from 'aws-amplify-react';
-import { Storage } from 'aws-amplify';
+import { Storage, Auth } from 'aws-amplify';
 import "../styles/upload.css";
 import preview from '../img/preview.jpg';
+import axios from 'axios';
 
 
 class Upload extends Component {
@@ -11,6 +12,7 @@ class Upload extends Component {
     Storage.configure({ level: 'private', track: true });
     this.onChange = this.onChange.bind(this);
     this.onFormSubmit = this.onFormSubmit.bind(this);
+    this.getLabels = this.getLabels.bind(this);
   }
 
   onChange(e) {
@@ -34,16 +36,41 @@ class Upload extends Component {
 	document.getElementById("preview").style.opacity = .2;
 	document.getElementById("loader-container").className = document.getElementById("loader-container").className.replace("hidden", "");
 
+	var self = this;
     Storage.put(this.state.file.name, this.state.file)
         .then (function(result) {
         	console.log(result);
         	document.getElementById("status").innerHTML = "Analyzing";
-        	//this.getLabels();
+        	self.getLabels();
 
         })
         .catch(err => console.log(err));
 
   }
+
+  getLabels() {
+  	var idToken = Auth.credentials.params.Logins["cognito-idp.us-east-1.amazonaws.com/us-east-1_BIhRQnDpw"];
+  	var fileURL = 'rekognition-20180119151350.rekognition-20180119151350-us-east-1.amazonaws.com/usercontent/private/' + Auth.credentials.data.IdentityId + "/" + this.state.file.name;
+
+  	axios.post('https://1rksbard2i.execute-api.us-east-1.amazonaws.com/prod/picture/search/', "", {
+	    headers: {
+	    	"Authorization": idToken,
+	    	"search-key": "rekognition-20180119151350.rekognition-20180119151350-us-east-1.amazonaws.com/usercontent/us-east-1:0b43b02c-917d-4567-9af6-bafb9d93335f/new-york.jpg"
+	    }
+	  })
+	  .then(function (response) {
+	    if(true /*has labels*/) {
+	    	console.log(response);
+	    } 
+	    else {
+	    	setTimeout(this.getLabels, 800);
+	    }
+	  })
+	  .catch(function (error) {
+	    console.log(error);
+	  });
+  }
+
 
   render() {
     return (
