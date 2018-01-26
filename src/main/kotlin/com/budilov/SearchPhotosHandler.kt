@@ -67,9 +67,13 @@ class SearchPhotosHandler : RequestHandler<ApigatewayRequest.Input, SearchPhotos
             }
             val headers: MutableMap<String, String> = HashMap()
             headers.put("Content-Type", "application/json")
+            headers.put("Access-Control-Allow-Origin", "*")
             
             return SearchResponse(200, headers, Gson().toJson(ResponseBody("Success", pictureList)))
         }
+        val headers: MutableMap<String, String> = HashMap()
+        headers.put("Access-Control-Allow-Origin", "*")
+
         return SearchResponse(400, null, """{"message":"$_RESPONSE_EMPTY"}""")
     }
 
