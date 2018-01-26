@@ -124,15 +124,31 @@ class RekognitionService {
 
             // Get status and job id from notification.
             val mapper: ObjectMapper = ObjectMapper()
+            println("mapper " + mapper)
+            println()
             val jsonMessageTree: JsonNode = mapper.readTree(notification)
+            println("jsonMessageTree " + jsonMessageTree)
+            println("Here Here Here Herer!!!")
+            println()
             val messageBodyText: JsonNode = jsonMessageTree.get("Message")
+            println("messageBodyText " + messageBodyText)
+            println()
             val operationResultMapper: ObjectMapper = ObjectMapper()
+            println("operationResultMapper " + operationResultMapper)
+            println()
             val jsonResultTree: JsonNode = operationResultMapper.readTree(messageBodyText.textValue())
+            println("jsonResultTree " + jsonResultTree)
+            println()
             val operationJobId: JsonNode = jsonResultTree.get("JobId")
+            println("operationJobId " + operationJobId)
             val operationStatus: JsonNode = jsonResultTree.get("Status")
+            println("operationStatus " + operationStatus)
+            println()
             println("Job found was " + operationJobId)
             // Found job. Get the results and display.
             if(operationJobId.asText().equals(startJobId)){
+               println("I'm inside the if statement for a operationStatus of SUCCEED")
+               println()
                jobFound=true
                println("Job id: " + operationJobId )
                println("Status : " + operationStatus.toString())
@@ -155,12 +171,14 @@ class RekognitionService {
                     res?.filter { it.getLabel().confidence >= Properties._REKOGNITION_CONFIDENCE_THRESHOLD }
                             ?.mapTo(labels) { it.getLabel().name }
 
+                    sqsClient.deleteMessage(queueUrl,message.getReceiptHandle())
+                    
                     return labels
                }
                else{
                   println("Video analysis failed")
                }
-
+               println("Are we ever getting here??")
                sqsClient.deleteMessage(queueUrl,message.getReceiptHandle())
             }
 
@@ -169,11 +187,10 @@ class RekognitionService {
             }
          }
       } while (!jobFound)
-
-
+      
       println("Done!")
-       
-        return arrayListOf() 
+      
+      return arrayListOf() 
     }
 
     //added by David Ehrlich for TechU Capstone 1.17.2018
@@ -188,6 +205,8 @@ class RekognitionService {
 
         val startLabelDetectionResult: StartLabelDetectionResult = rekognitionClient.startLabelDetection(req)
         startJobId = startLabelDetectionResult.getJobId()
+        print("startJobId from inside StartLabels() " + startJobId)
+        println()
     }
 
     //added by David Ehrlich for TechU Capstone 1.17.2018
@@ -197,11 +216,15 @@ class RekognitionService {
         var paginationToken: String? = null
         var labelDetectionResult: GetLabelDetectionResult? = null
         var detectedLabels: List<LabelDetection>? = null
+        println("successfully instantiated variables")
+        println()
 
         do {
          if (labelDetectionResult !=null){
             paginationToken = labelDetectionResult.getNextToken()
          }
+
+         println("successfully got pagination token" + paginationToken)
 
          val labelDetectionRequest: GetLabelDetectionRequest = GetLabelDetectionRequest()
                .withJobId(startJobId)
@@ -212,12 +235,16 @@ class RekognitionService {
 
          labelDetectionResult = rekognitionClient.getLabelDetection(labelDetectionRequest)
 
+         println("successfully assigned labelDetectionRequest" + labelDetectionRequest)
+
          val videoMetaData: VideoMetadata = labelDetectionResult.getVideoMetadata()
 
          println("Format: " + videoMetaData.getFormat())
          println("Codec: " + videoMetaData.getCodec())
          println("Duration: " + videoMetaData.getDurationMillis())
          println("FrameRate: " + videoMetaData.getFrameRate())
+
+         println("successfully got videoMetaData" + videoMetaData)
 
 
          //Show labels, confidence and detection times
