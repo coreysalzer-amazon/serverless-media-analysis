@@ -6,7 +6,7 @@ import { Authenticator, SignIn, SignUp, ConfirmSignUp, Greetings } from 'aws-amp
 import { Storage } from 'aws-amplify';
 //import { PhotoPicker } from 'aws-amplify-react';
 // import AppSignedIn from './AppSignedIn';
-import Layout from './Layout'
+import Layout from '../pages/Layout'
 import '../styles/app.css'
 
 Amplify.configure({
@@ -35,27 +35,47 @@ Amplify.configure({
 class App extends Component {
   // constructor(){
   //   super();
+  //   this.state = { 
+  //     username: "",
+  //     password: ""
+  //   }
   //   this.signedIn = this.signedIn.bind(this);
+  //   this.user = this.user.bind(this);
+  //   this.signUp = this.signUp.bind(this);
+
   // }
 
-  // signedIn(signedIn){
-  //   this.props.state.signedIn(signedIn);
+  // storeUsername(e) {
+  //   this.setState({ username: e.target.value });
   // }
 
-  // handleAuthStateChange(state) {
-  //     if (state === 'signedIn') { 
-  //       this.signedIn(true);
-  //     }
+  // storePassword (e) {
+  //   this.setState({ password: e.target.value });
+  // }
+
+  // user(userObject) {
+  //   this.props.state.user(userObject);
+  // }
+
+  // signedIn(signedInObject){
+  //   this.props.state.signedIn(signedInObject);
   // }
 
   // signIn() {
+  //   var username = this.state.username;
+  //   var password = this.state.password;
+  //   this.props.signIn(username, password);
+  // }
+
+  // signUp() {
   //   var username = document.getElementById("username").value;
   //   var password = document.getElementById("password").value;
   //   var self = this;
-  //   Auth.signIn(username, password)
+  //   Auth.signUp(username, password, username, null)
   //   .then(function(user) {
   //     console.log(user);
   //     self.signedIn(true);
+  //     self.user(user);
   //   }).catch(err => console.log(err));
   // }
 
@@ -64,16 +84,16 @@ class App extends Component {
   //         <Authenticator hideDefault={true} onStateChange={this.handleAuthStateChange}>
   //             <div className="container col-sm-offset-2 col-sm-8">
   //               <div className="col-sm-offset-3 col-sm-6">
-  //                 <input id="username" placeholder="Username" type="text" />
+  //                 <input id="username" placeholder="Username" onChange={ this.storeUsername.bind(this) } type="text" />
   //               </div>
   //               <div className="col-sm-offset-3 col-sm-6">
-  //                 <input id="password" placeholder="Password" type="password" />
+  //                 <input id="password" placeholder="Password" onChange={ this.storePassword.bind(this) } type="password" />
   //               </div>
   //               <div className="col-sm-offset-3 col-sm-6">
-  //                 <button className="btn btn-info btn-lg" onClick={this.signIn}>Sign In</button>
+  //                 <button className="btn btn-info btn-lg" onClick={this.signIn.bind(this) }>Sign In</button>
   //               </div>
   //               <div className="col-sm-offset-3 col-sm-6">
-  //                 <button className="helper-button">Sign Up</button>
+  //                 <button className="helper-button" onClick={this.signUp}>Sign Up</button>
   //                 <button className="helper-button" id="forgot-password">Forgot Password</button>
   //               </div>
   //             </div>
@@ -86,14 +106,15 @@ class App extends Component {
   // }
 
   render(){
+
     return (
-      <div>
+      <Authenticator>
         <Layout { ...this.props } />
-      </div>
+      </Authenticator>
     );
   }
 
 }
 
-export default withAuthenticator(App, { includeGreetings: true });
-// export default App;
+// export default withAuthenticator(App, { includeGreetings: true });
+export default App;

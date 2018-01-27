@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { SideMenu, Item } from 'react-sidemenu'
 import { Auth } from 'aws-amplify'
-
-import Upload from './Upload'
-import '../styles/AppSignedIn.css'
-import '../styles/SideBar.css'
 import { Link } from 'react-router'
 import PropTypes from 'prop-types'
+
+import '../styles/AppSignedIn.css'
+import '../styles/SideBar.css'
+
 
 class Layout extends Component {
   // constructor(props) {
@@ -19,13 +18,17 @@ class Layout extends Component {
   // }
 
   signOut() {
+    console.log(Auth);
     Auth.signOut()
       .then(data => console.log(data))
       .catch(err => console.log(err));
   }
 
   render() {
-    if (this.props.authState !== 'signedIn') { return null; }
+    var username = localStorage.getItem("CognitoIdentityServiceProvider.29moqbhis5p3vcedcvmr7e49rm.LastAuthUser");
+    if(this.props.authData != undefined) {
+        username = this.props.authData.username;
+    }  
 
     return (
       <div className="AppSignedIn">
@@ -33,9 +36,7 @@ class Layout extends Component {
           <div className="col-sm-3 col-xs-5">
             <div className="profile-sidebar">
               <div className="profile-usertitle">
-                <div className="profile-usertitle-name">
-                  test@user.com
-                </div>
+                <div className="profile-usertitle-name">{username}</div>
               </div>
               <div className="profile-userbuttons">
                 <button onClick={ this.signOut } className="btn btn-info btn-sm">Sign Out</button>

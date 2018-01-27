@@ -1,20 +1,36 @@
-input {
-    width: 100%;
-    margin-bottom: 10px;
-    height: 44px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: 1px solid #d9d9d9;
-    border-top: 1px solid #c0c0c0;
-    box-sizing: border-box;
-    -webkit-appearance: none;
-    background: #fff;
-    padding: 10px;
+.amplify-form-section {
+    margin-top: 30px !important;
 }
 
-.btn-lg {
-	width: 100%;
-	margin-bottom: 5px;
+.amplify-section-header {
+    background-color: #5bc0de !important;
+    border-color: #5bc0de !important;
+    font-size: 24px !important;
+}
+
+.amplify-input {
+    width: 100% !important;
+    margin-bottom: 10px !important;
+    height: 44px !important;
+    font-size: 16px !important;
+    border-radius: 6px !important;
+    border: 1px solid #d9d9d9 !important;
+    border-top: 1px solid #c0c0c0 !important;
+    box-sizing: border-box !important;
+    -webkit-appearance: none !important;
+    background: #fff !important;
+    padding: 10px !important;
+}
+
+.amplify-button {
+	width: 100% !important;
+	margin-bottom: 5px !important;
+    background-color: #5bc0de !important;
+    color: #fff !important;
+}
+
+.amplify-a {
+    color: #5a7391 !important;
 }
 
 .container {
