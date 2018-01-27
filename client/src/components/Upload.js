@@ -4,10 +4,16 @@ import { Storage, Auth } from 'aws-amplify';
 import "../styles/upload.css";
 import preview from '../img/preview.jpg';
 import axios from 'axios';
+import $ from 'jquery';
 
 var LabelsList = React.createClass({
     render: function() {
-		var listComponents = this.props.labels.map(function(label) {
+		var uniqueLabels = [];
+		$.each(this.props.labels, function(i, el){
+		    if($.inArray(el, uniqueLabels) === -1) uniqueLabels.push(el);
+		});
+
+		var listComponents = uniqueLabels.map(function(label) {
             return(
             	<div className="labels" key={label}>
             		<i className="label-name">{label}</i>
@@ -36,10 +42,10 @@ class Upload extends Component {
 
   onChange(e) {
   	this.setState({file:e.target.files[0]});
-  	document.getElementById("file-input-container").className = document.getElementById("upload").className + " hidden";
+  	document.getElementById("file-input-container").className = document.getElementById("file-input-container").className + " hidden";
   	document.getElementById("upload").className = document.getElementById("upload").className.replace("hidden", "");
   	
-  	if(e.target.files[0].type.includes("image")) {
+  	if(e.target.files[0] && e.target.files[0].type.includes("image")) {
   		var reader = new FileReader();
 	    reader.onload = function(){
 	      var output = document.getElementById('preview');
@@ -71,26 +77,42 @@ class Upload extends Component {
   	var idToken = Auth.credentials.params.Logins["cognito-idp.us-east-1.amazonaws.com/us-east-1_BIhRQnDpw"];
   	var fileURL = 'rekognition-20180119151350.rekognition-20180119151350-us-east-1.amazonaws.com/usercontent/private/' + Auth.credentials.data.IdentityId + "/" + this.state.file.name;
 
-  	// axios.post('https://1rksbard2i.execute-api.us-east-1.amazonaws.com/prod/picture/search/', "", {
-	  //   headers: {
-	  //   	"Authorization": idToken,
-	  //   	"search-key": "rekognition-20180119151350.rekognition-20180119151350-us-east-1.amazonaws.com/usercontent/us-east-1:0b43b02c-917d-4567-9af6-bafb9d93335f/new-york.jpg"
-	  //   }
-	  // })
-	  // .then(function (response) {
-	  //   if(true /*has labels*/) {
-	  //   	console.log(response);
-	  //   } 
-	  //   else {
-	  //   	setTimeout(this.getLabels, 800);
-	  //   }
-	  // })
-	  // .catch(function (error) {
-	  //   console.log(error);
-	  // });
-	  document.getElementById("loader-container").className = document.getElementById("loader-container").className + " hidden";
-	  var testLabels = ["Building", "photo", "person"];
-	  this.setState({labels:testLabels});
+ //  	$.ajax({
+ //  		url: 'https://1rksbard2i.execute-api.us-east-1.amazonaws.com/prod/picture/search',
+ //  		type: 'POST',
+ //  		headers: {
+	//   		"Authorization": idToken,
+	// 	    "search-key": fileURL
+ //  		},
+ //  		success: function(data) {
+	//   		console.log(data);
+	//   	}
+	// });
+	var self = this;
+  	axios('https://1rksbard2i.execute-api.us-east-1.amazonaws.com/prod/picture/search', {
+  		method: 'POST',
+	    headers: {
+	    	"Authorization": idToken,
+	    	"search-key": fileURL
+	    }
+	  })
+	  .then(function (response) {
+	    if(response.data.pictures.length == 1 && response.data.pictures[0].s3BucketUrl == fileURL) {
+	    	console.log(response);
+	    	document.getElementById("loader-container").className = document.getElementById("loader-container").className + " hidden";
+			document.getElementById("upload").className = document.getElementById("upload").className + " hidden";
+			document.getElementById("file-input-container").className = document.getElementById("file-input-container").className.replace("hidden", "");
+
+			var labels = response.data.pictures[0].labels;
+			self.setState({labels:labels});
+	    } 
+	    else {
+	    	setTimeout(self.getLabels, 1000);
+	    }
+	  })
+	  .catch(function (error) {
+	    console.log(error);
+	  });
   }
 
   render() {
