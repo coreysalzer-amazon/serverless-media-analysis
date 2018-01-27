@@ -212,7 +212,7 @@ class RekognitionService {
     //added by David Ehrlich for TechU Capstone 1.17.2018
     fun GetResultsLabels(): List<LabelDetection>? {
 
-        val maxResults: Int = 10
+        val maxResults: Int = 100 //was 10 before
         var paginationToken: String? = null
         var labelDetectionResult: GetLabelDetectionResult? = null
         var detectedLabels: List<LabelDetection>? = null
@@ -229,7 +229,7 @@ class RekognitionService {
          val labelDetectionRequest: GetLabelDetectionRequest = GetLabelDetectionRequest()
                .withJobId(startJobId)
                .withSortBy(LabelDetectionSortBy.TIMESTAMP)
-               .withMaxResults(maxResults)
+               //.withMaxResults(maxResults)
                .withNextToken(paginationToken)
 
 

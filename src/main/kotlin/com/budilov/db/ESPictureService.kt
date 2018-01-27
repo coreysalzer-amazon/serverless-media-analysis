@@ -116,9 +116,13 @@ class ESPictureService : DBPictureService {
      * For now it always returns true
      */
     override fun add(userId: String, item: PictureItem): Boolean {
+        println("entered fun add")
+        println()
         val index = Index.Builder(item).index(_DEFAULT_INDEX).type(userId).build()
+        println("properly assigned index")
+        println()
         val result = client.execute(index)
-
+        println("es result: " + result)
         return result.isSucceeded
     }
 

@@ -54,17 +54,18 @@ class SearchPhotosHandler : RequestHandler<ApigatewayRequest.Input, SearchPhotos
             logger?.log("request or context is null")
         } else {
             val searchString = request.headers?.get(searchKeyName) ?: ""
+            println("searchString: " + searchString)
             val pictureList: List<PictureItem> = esService.search(getCognitoId(request.headers?.get("Authorization") ?: ""), searchString)
             logger?.log("Found pictures: " + pictureList)
 
-            for (picture in pictureList) {
+            /*for (picture in pictureList) {
                 logger?.log("object: " + picture.s3BucketUrl.substringAfter("/"))
 
                 picture.signedUrl = s3Service.getSignedUrl(Properties._BUCKET_NAME,
                         picture.s3BucketUrl.substringAfter("/")).toString()
 
                 logger?.log("signedUrl: " + picture.signedUrl)
-            }
+            }*/
             val headers: MutableMap<String, String> = HashMap()
             headers.put("Content-Type", "application/json")
             headers.put("Access-Control-Allow-Origin", "*")
@@ -91,6 +92,7 @@ class SearchPhotosHandler : RequestHandler<ApigatewayRequest.Input, SearchPhotos
 
         identityClient.setRegion(Region.getRegion(Regions.fromName(Properties._REGION)))
         val idResp = identityClient.getId(idRequest)
+        println("idResp: " + idResp)
 
         return idResp.identityId ?: ""
     }
