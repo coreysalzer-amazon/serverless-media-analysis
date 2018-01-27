@@ -5,7 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.S3Event
 import com.budilov.db.ESPictureService
 import com.budilov.pojo.PictureItem
-import com.budilov.rekognition.RekognitionPhotoService
+import com.budilov.rekognition.RekognitionVideoService
 import java.net.URLDecoder
 
 /**
@@ -13,9 +13,9 @@ import java.net.URLDecoder
  *
  * This Lambda function is invoked by S3 whenever an object is added to an S3 bucket.
  */
-class AddPhotoLambda : RequestHandler<S3Event, String> {
+class AddVideoLambda : RequestHandler<S3Event, String> {
 
-    private val rekognition = RekognitionPhotoService()
+    private val rekognition = RekognitionVideoService()
     private val esService = ESPictureService()
 
     /**
@@ -37,16 +37,19 @@ class AddPhotoLambda : RequestHandler<S3Event, String> {
         logger.log("bucket: ${srcBucket}, key: ${srcKey}")
 
         // Get the cognito id from the object name (it's a prefix)
-        val cognitoId = srcKey.split("/")[1]
+        var cognitoId = srcKey.split("/")[1]
+        if (cognitoId == "private") {
+            cognitoId = srcKey.split("/")[2]
+        }
         logger.log("Cognito ID: ${cognitoId}")
 
         val labels = rekognition.getLabels(srcBucket, srcKey)
         if (labels.isNotEmpty()) {
-            val picture = PictureItem(srcKeyEncoded.hashCode().toString(), srcBucket + Properties._BUCKET_URL + "/" + srcKey, labels, null)
-            logger.log("Saving picture: ${picture}")
+            val video = PictureItem(srcKeyEncoded.hashCode().toString(), srcBucket + Properties._BUCKET_URL + "/" + srcKey, labels, null)
+            logger.log("Saving video: ${video}")
 
-            // Save the picture to ElasticSearch
-            esService.add(cognitoId, picture)
+            // Save the video to ElasticSearch
+            esService.add(cognitoId, video)
 
         } else {
             logger.log("No labels returned. Not saving to ES")
