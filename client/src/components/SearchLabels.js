@@ -8,6 +8,7 @@ import preview from '../img/preview.jpg';
 class ImageResult extends Component {
 	constructor(props) {
 		super(props);
+		this.loadError = this.loadError.bind(this);
 
 		if (this.props.fileName) {
 			var self = this;
@@ -28,22 +29,27 @@ class ImageResult extends Component {
 		this.setState({file:preview});
 	}
 
+	loadError(e) {
+		e.target.onerror=null;
+		e.target.src= preview;
+	}
+
 	render() {
 		var file = preview;
   		if(this.state) { file = this.state.file; }
 
   		if(file.includes(".mov") || file.includes(".mp4")) {
-  			return(<video autoPlay src= { file } alt={ preview }></video>);
+  			return(<video className="col-xs-12" muted autoPlay src= { file } alt="Video Not Found" onError= { this.loadError }></video>);
   		}
 
-        return(<img src= { file }></img>);
+        return(<img className="col-xs-12" src= { file } alt="Image Not Found" onError={ this.loadError }></img>);
 
 	}
 }
 
-class SearchResults extends Component {
-    render() {
-		var resultsList = this.props.results.map(function(result) {
+class ResultsRow extends Component {
+	render() {
+		var resultsRowList = this.props.results.map(function(result) {
             var fileName = result.s3BucketUrl.substring(result.s3BucketUrl.lastIndexOf("/") + 1, result.s3BucketUrl.length);
 		   	//      	var uniqueLabels = [];
 			// $.each(result.labels, function(i, el){
@@ -53,14 +59,30 @@ class SearchResults extends Component {
     		return(
             	<div className="result col-md-4 col-xs-12" key={result.id}>
         			<ImageResult fileName={ fileName } />
-        			<strong className="result-name">{ fileName }</strong>
+        			<strong className="result-name col-xs-12">{ fileName }</strong>
         		</div>
         	);		
         });
+        if(resultsRowList.length == 0) {
+        	resultsRowList = <div className="result col-md-4 col-xs-12"></div>;
+        }
+        return(<div className="row row-eq-height">{resultsRowList}</div>);
+	}
+}
+
+class SearchResults extends Component {
+    render() {
+    	var numColsInRow = 3;
+    	var counter = 0;
+    	var resultsList = [];
+    	while(counter < this.props.results.length) {
+    		resultsList.push(<ResultsRow key={counter} results={this.props.results.slice(counter, Math.min(this.props.results.length, counter+numColsInRow))} />);
+    		counter += numColsInRow;
+    	}
         if(resultsList.length == 0) {
         	resultsList = <div className="result col-md-4 col-xs-12"></div>;
         }
-        return(<div className="results">{resultsList}</div>);
+        return(<div className="results container-fluid">{resultsList}</div>);
     }
 }
 
