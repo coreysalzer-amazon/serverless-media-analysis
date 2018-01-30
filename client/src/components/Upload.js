@@ -20,7 +20,7 @@ var LabelsList = React.createClass({
         		</div>
         	);
         });
-        if(listComponents.length == 0) {
+        if(listComponents.length === 0) {
         	listComponents = <div className="labels"></div>;
         }
         return <div>{listComponents}</div>;
@@ -97,7 +97,7 @@ class Upload extends Component {
 	    }
 	  })
 	  .then(function (response) {
-	    if(response.data.pictures.length == 1 && response.data.pictures[0].s3BucketUrl == fileURL) {
+	    if(response.data.pictures.length === 1 && response.data.pictures[0].s3BucketUrl === fileURL) {
 	    	console.log(response);
 	    	document.getElementById("loader-container").className = document.getElementById("loader-container").className + " hidden";
 			document.getElementById("upload").className = document.getElementById("upload").className + " hidden";
@@ -133,10 +133,10 @@ class Upload extends Component {
 		    			<img id="preview" src={ preview }></img>
 		    			<h1 className="title" id="file-name"></h1>
 		    		</div>
-					<label id="file-input-container" className="btn btn-lg btn-info btn-file">
+					<label id="file-input-container" className="btn btn-lg btn-info btn-file col-xs-12">
 					    Choose Photo or Video File <input id="file-input" type="file" accept="image/*, video/*" onChange={this.onChange}/>
 					</label>
-				    <button id="upload" className="hidden btn btn-success btn-lg" type="submit">Upload</button>
+				    <button id="upload" className="hidden btn btn-success btn-lg col-xs-12" type="submit">Upload</button>
 				</form>
 			</div>
 			<div className='col-sm-3'>

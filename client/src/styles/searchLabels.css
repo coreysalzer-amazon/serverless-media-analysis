@@ -8,3 +8,11 @@
 .form-control-feedback, .form-control{
 	color: #5a7391;
 }
+
+.result {
+	padding: 20px;
+}
+
+video, img {
+	width: 100%;
+}
