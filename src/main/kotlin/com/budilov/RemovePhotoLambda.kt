@@ -41,9 +41,12 @@ class RemovePhotoLambda : RequestHandler<S3Event, String> {
         val picture = PictureItem(srcKeyEncoded.hashCode().toString(), srcBucket + Properties._BUCKET_URL + "/" + srcKey, null, null)
         logger?.log("Removing picture from ES: ${picture}")
 
-        // Getting the cognito id from the object name (it's a prefix)
-        val cognitoId = srcKey.split("/")[1]
-        logger?.log("Cognito ID: ${cognitoId}")
+        // Get the cognito id from the object name (it's a prefix)
+        var cognitoId = srcKey.split("/")[1]
+        if (cognitoId == "private") {
+            cognitoId = srcKey.split("/")[2]
+        }
+        logger.log("Cognito ID: ${cognitoId}")
 
         esService.delete(cognitoId, picture)
 
