@@ -71,3 +71,7 @@
 body {
     color: #333 !important;
 }
+
+a:hover {
+    color: #FF9900;
+}

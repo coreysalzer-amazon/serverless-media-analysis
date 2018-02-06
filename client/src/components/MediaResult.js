@@ -66,7 +66,7 @@ class MediaResult extends Component {
         		<div className="col-xs-12">
         			<img src= { file } alt="Image Not Found" onError={ this.loadError }></img>
         		</div>
-        		<a href={ file } className="result-name col-xs-12">{ fileName }</a>
+        		<a href={ file } className="block-text result-name col-xs-12">{ fileName }</a>
         	</div>
         );
 

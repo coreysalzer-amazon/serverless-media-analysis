@@ -1,63 +1,70 @@
 import React, { Component } from 'react';
 import { Auth } from 'aws-amplify';
-import axios from 'axios';
-import $ from 'jquery';
-import '../styles/searchLabels.css';
-import preview from '../img/preview.jpg';
 import Loader from './Loader';
-import SearchResults from './SearchResults'
+import SearchResults from './SearchResults';
+import AWS from 'aws-sdk';
+import axios from 'axios';
 
-
-class SearchLabels extends Component {
+class Browse extends Component {
 	constructor(props) {
 	    super(props);
 	    this.onSearch = this.onSearch.bind(this);
+	    this.getAllFiles = this.getAllFiles.bind(this);
 	}
 
 	componentDidMount() {
 		this.setState({
-			results:[],
-			isLoading:false
-		});
-	}
-
-	onSearch(e) {
-		var self = this;
-		e.preventDefault();
-		self.setState({
+			allFiles: [],
 			results: [],
 			isLoading: true
 		})
+		this.getAllFiles();
+	}
 
-      	var searchValue = document.getElementById("search-value").value;
+
+	getAllFiles() {
+		var self = this;
 		var idToken = Auth.credentials.params.Logins["cognito-idp.us-east-1.amazonaws.com/us-east-1_BIhRQnDpw"];
 		axios.post('https://1rksbard2i.execute-api.us-east-1.amazonaws.com/prod/picture/search/', "", {
 		    headers: {
 		    	"Authorization": idToken,
-		    	"search-key": searchValue
+		    	"search-key": Auth.credentials.identityId
 		    }
 		  })
 		  .then(function (response) {
 		    if(response.data.pictures.length != 0) {
 		    	console.log(response);
 		    	self.setState({
-		    		results: response.data.pictures, 
+		    		allFiles: response.data.pictures, 
+		    		results: response.data.pictures,
 		    		isLoading: false
 		    	}); 	
 		    } 
 		    else {
 		    	self.setState({
-		    		results: [], 
+		    		allFiles: [], 
+		    		results: [],
 		    		isLoading: false
 		    	}); 
-		    	console.log("no pictures found");
+		    	console.log("no files found");
 		    }
 		  })
 		  .catch(function (error) {
 		    console.log(error);
 		  });
-
 	}
+
+	onSearch(e) {
+		e.preventDefault();
+		var searchValue = document.getElementById("search-value").value;
+
+		this.setState({
+			allFiles: this.state.allFiles,
+			results: this.state.allFiles.filter(result => searchValue === result.s3BucketUrl.substring(result.s3BucketUrl.lastIndexOf("/") + 1, result.s3BucketUrl.length)),
+			isLoading: false
+		});
+	}
+
 
 	render(){
 		var results = [];
@@ -71,7 +78,7 @@ class SearchLabels extends Component {
 			<div>
 				<form id="search-form" onSubmit={this.onSearch} className="form-inline">
 				    <div className="form-group has-feedback col-xs-offset-1 col-xs-10">
-	                  <input className="form-control col-xs-12" id="search-value" placeholder="Search Labels" type="text" />
+	                  <input className="form-control col-xs-12" id="search-value" placeholder="Search Files" type="text" />
 	                  <span className="form-control-feedback glyphicon glyphicon-search"></span>
 	                </div>
                 </form>
@@ -80,6 +87,7 @@ class SearchLabels extends Component {
 			</div>
 		);
 	}
+	
 }
 
-export default SearchLabels;
+export default Browse;

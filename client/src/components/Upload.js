@@ -48,6 +48,9 @@ class Upload extends Component {
   }
 
   onChange(e) {
+  	if(e.target.files.length > 1) {
+  		alert("Nice! You tried to use a feature on our roadmap. Unforunately, right now, you can only upload 1 photo or video at a time, so we took your first file. Multiple file uploads is coming soon, so stay tuned ;) ");
+  	}
   	this.setState({
   		file:e.target.files[0],
   		labels:[],
@@ -69,7 +72,6 @@ class Upload extends Component {
 
   onFormSubmit(e) {
   	e.preventDefault();
-	document.getElementById("preview").style.opacity = .2;
 	this.setState({
 		labels: [],
 		isUploading: true,
@@ -142,18 +144,18 @@ class Upload extends Component {
     	<div>
 	    	<div className="col-sm-9">
 	    		<form onSubmit={this.onFormSubmit}>
-		    		<div className="preview-container">
+		    		<div onClick={ () => $('input[type=file]').trigger('click') } className="preview-container">
 		    			{ isUploading && <Loader title="Uploading"/> }
 		    			{ isAnalyzing && <Loader title="Analyzing"/> }
-		    			<img id="preview" src={ preview }></img>
+		    			<img className={ isUploading || isAnalyzing ? "dim" : "" } id="preview" src={ preview }></img>
 		    			<h1 className="title" id="file-name"></h1>
 		    		</div>
-		    		{ !canUpload && !isUploading && !isAnalyzing &&
-		    		<button onClick={ (e) => { if(e.target.id === "file-input-container") $('input[type=file]').trigger('click') } } type="button" id="file-input-container" className="btn btn-lg btn-info btn-file col-xs-12">
+		    		<button onClick={ (e) => { if(e.target.id === "file-input-container") $('input[type=file]').trigger('click') } } 
+		    			type="button" id="file-input-container" className={ "btn btn-lg btn-info btn-file col-xs-12" + (!canUpload && !isUploading && !isAnalyzing ? "" : " hidden") }>
 						<label className="btn-file">
 						    Choose Photo or Video File(s) <input id="file-input" type="file" accept="image/*, video/*" multiple onChange={this.onChange}/>
 						</label>
-					</button> }
+					</button>
 				    { canUpload && <button id="upload" className="btn btn-success btn-lg col-xs-12" type="submit">Upload</button> }
 				</form>
 			</div>

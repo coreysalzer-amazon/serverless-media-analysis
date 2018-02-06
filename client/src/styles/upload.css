@@ -4,8 +4,11 @@
 }
 
 .preview-container {
-	padding-bottom: 20px;
 	max-height: 80%;
+	border: #333 1px solid;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
 }
 
 .btn-file {
@@ -57,4 +60,12 @@ label {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.hidden {
+	display: none;
+}
+
+.dim {
+	opacity: .2;
 }
