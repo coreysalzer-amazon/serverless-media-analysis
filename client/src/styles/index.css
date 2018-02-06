@@ -1,5 +1,9 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+}
+
+html * {
+	font-family: AmazonEmberBold,Helvetica Neue Bold,Helvetica Neue,Helvetica,Arial,sans-serif !important;
+
 }

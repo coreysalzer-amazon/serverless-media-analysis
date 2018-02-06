@@ -1,8 +1,18 @@
-export const SIGNED_IN = "SIGNED_IN";
+import { Auth } from 'aws-amplify';
 
-export function signedIn(signedIn){
+export const SIGN_IN = "SIGN_IN";
+export const SIGN_IN_SUCCESS = "SIGN_IN_SUCCESS";
+
+export function signIn(username, password){
 	return {
-		type: SIGNED_IN,
-		payload: signedIn
+		type: SIGN_IN,
+		payload: Auth.signIn(username, password)
 	};	
 };
+
+export function signInSuccess() {
+	return {
+		type: SIGN_IN_SUCCESS,
+		payload: {}
+	};	
+}

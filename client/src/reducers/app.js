@@ -1,17 +1,14 @@
 import { 
-	SIGNED_IN
+	SIGN_IN,
 } from '../actions/app';
 
-const INITIAL_STATE = {
-	signedIn: 'false',
-};
+const INITIAL_STATE = { };
 
 export default function(state=INITIAL_STATE, action){
 	switch(action.type){
-		case SIGNED_IN:
+		case SIGN_IN:
 			return {
-				...state,
-				stream: action.payload
+				...state
 			};
 			break;
 		default:

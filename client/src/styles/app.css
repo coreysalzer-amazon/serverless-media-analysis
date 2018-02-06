@@ -3,8 +3,8 @@
 }
 
 .amplify-section-header {
-    background-color: #5bc0de !important;
-    border-color: #5bc0de !important;
+    background-color: #333 !important;
+    border-color: #333 !important;
     font-size: 24px !important;
 }
 
@@ -25,12 +25,12 @@
 .amplify-button {
 	width: 100% !important;
 	margin-bottom: 5px !important;
-    background-color: #5bc0de !important;
+    background-color: #333 !important;
     color: #fff !important;
 }
 
 .amplify-a {
-    color: #5a7391 !important;
+    color: #333 !important;
 }
 
 .container {
@@ -48,4 +48,26 @@
 
 .helper-button:hover {
 	text-decoration: underline;
+}
+
+.btn-info {
+    background-color: #333 !important;
+    border-color: #333 !important;
+}
+
+.btn-info:hover {
+    border-color: #FF9900 !important;
+}
+
+.btn-success {
+    background-color: #FF9900 !important;
+    border-color: #FF9926 !important;
+}
+
+.btn-success:hover {
+    border-color: #333 !important;
+}
+
+body {
+    color: #333 !important;
 }

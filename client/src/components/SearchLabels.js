@@ -1,54 +1,17 @@
 import React, { Component } from 'react';
-import { Auth, Storage } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 import axios from 'axios';
 import $ from 'jquery';
 import '../styles/searchLabels.css';
 import preview from '../img/preview.jpg';
+import Loader from './Loader';
+import MediaResult from './MediaResult';
 
-class ImageResult extends Component {
-	constructor(props) {
-		super(props);
-		this.loadError = this.loadError.bind(this);
-
-		if (this.props.fileName) {
-			var self = this;
-			Storage.get(this.props.fileName, { level: "private" })
-		        .then (function(response) {
-		        	console.log(response);
-		        	var file = response;
-		            self.setState({file: file});
-		        })
-	    		.catch(function(err){
-	    			console.log(err);
-	    			self.setState({file: preview});
-	    		});
-		}
-	}
-
-	componentWillMount() {
-		this.setState({file:preview});
-	}
-
-	loadError(e) {
-		e.target.onerror=null;
-		e.target.src= preview;
-	}
-
-	render() {
-		var file = preview;
-  		if(this.state) { file = this.state.file; }
-
-  		if(file.includes(".mov") || file.includes(".mp4")) {
-  			return(<video className="col-xs-12" muted autoPlay src= { file } alt="Video Not Found" onError= { this.loadError }></video>);
-  		}
-
-        return(<img className="col-xs-12" src= { file } alt="Image Not Found" onError={ this.loadError }></img>);
-
-	}
-}
 
 class ResultsRow extends Component {
 	render() {
+		var isLoading = this.props.isLoading;
+
 		var resultsRowList = this.props.results.map(function(result) {
             var fileName = result.s3BucketUrl.substring(result.s3BucketUrl.lastIndexOf("/") + 1, result.s3BucketUrl.length);
 		   	//      	var uniqueLabels = [];
@@ -58,8 +21,7 @@ class ResultsRow extends Component {
 
     		return(
             	<div className="result col-md-4 col-xs-12" key={result.id}>
-        			<ImageResult fileName={ fileName } />
-        			<strong className="result-name col-xs-12">{ fileName }</strong>
+        			<MediaResult fileName={ fileName } />
         		</div>
         	);		
         });
@@ -72,6 +34,7 @@ class ResultsRow extends Component {
 
 class SearchResults extends Component {
     render() {
+    	// number of results in each row to render in each ResultsRow
     	var numColsInRow = 3;
     	var counter = 0;
     	var resultsList = [];
@@ -94,12 +57,20 @@ class SearchLabels extends Component {
 	}
 
 	componentDidMount() {
-		this.setState({results:[]})
+		this.setState({
+			results:[],
+			isLoading:false
+		});
 	}
 
 	onSearch(e) {
 		var self = this;
 		e.preventDefault();
+		self.setState({
+			results: [],
+			isLoading: true
+		})
+
       	var searchValue = document.getElementById("search-value").value;
 		var idToken = Auth.credentials.params.Logins["cognito-idp.us-east-1.amazonaws.com/us-east-1_BIhRQnDpw"];
 		axios.post('https://1rksbard2i.execute-api.us-east-1.amazonaws.com/prod/picture/search/', "", {
@@ -111,10 +82,17 @@ class SearchLabels extends Component {
 		  .then(function (response) {
 		    if(response.data.pictures.length != 0) {
 		    	console.log(response);
-		    	self.setState({results:response.data.pictures}); 	
+		    	self.setState({
+		    		results: response.data.pictures, 
+		    		isLoading: false
+		    	}); 	
 		    } 
 		    else {
-		    	//no pictures with Label
+		    	self.setState({
+		    		results: [], 
+		    		isLoading: false
+		    	}); 
+		    	console.log("no pictures found");
 		    }
 		  })
 		  .catch(function (error) {
@@ -125,7 +103,11 @@ class SearchLabels extends Component {
 
 	render(){
 		var results = [];
-		if(this.state) { results = this.state.results };
+		var isLoading = false;
+		if(this.state) { 
+			results = this.state.results;
+			isLoading = this.state.isLoading;
+		};
 
 		return(
 			<div>
@@ -135,6 +117,7 @@ class SearchLabels extends Component {
 	                  <span className="form-control-feedback glyphicon glyphicon-search"></span>
 	                </div>
                 </form>
+                { isLoading && <Loader title="Loading"/> }
                 <SearchResults results={results} />
 			</div>
 		);

@@ -1,14 +1,15 @@
 #file-input {
 	display: none;
-}
-
-.hidden {
-	display: none;
+	cursor: pointer;
 }
 
 .preview-container {
 	padding-bottom: 20px;
 	max-height: 80%;
+}
+
+.btn-file {
+	cursor: pointer
 }
 
 #preview {
@@ -17,7 +18,7 @@
 }
 
 .title {
-	color: #5a7391;
+	color: #333;
     font-weight: 600;
 }
 
@@ -26,40 +27,25 @@
 }
 
 .labels-container-title {
-	padding-top: 25px;
     padding-bottom: 5px;
     font-size: 24px;
 }
 
 .labels {
 	padding-top: 15px;
-    border: 1px solid #5a7391;
+    border: 1px solid #333;
     font-size: 18px;
 }
 
+label {
+	font-weight: 400;
+}
+
 .label-name {
-	color: #5b9bd1;
+	color: #333;
 	word-wrap: break-word;
 	display: block;
 	padding: 0 10px;
-}
-
-#loader-container {
-	position: absolute;
-    width: 100%;
-    margin-top: 50px
-}
-
-.loader {
-	width: 35px; 
-	height: 35px; 
-	border-width: 2px; 
-	border-style: solid; 
-	border-color: rgb(90, 115, 145) rgb(90, 115, 145) transparent; 
-	border-image: initial; border-radius: 100%; 
-	-webkit-animation: spin .75s linear infinite; /* Safari */
-	animation: spin 0.75s linear infinite both; 
-	display: inline-block;
 }
 
 /* Safari */

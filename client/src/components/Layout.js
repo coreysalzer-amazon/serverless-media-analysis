@@ -35,6 +35,9 @@ class Layout extends Component {
         <div className="row profile">
           <div className="col-sm-3 col-xs-5">
             <div className="profile-sidebar">
+              <div className="profile-userpic">
+                <img src="./logo.jpeg"></img>
+              </div>
               <div className="profile-usertitle">
                 <div className="profile-usertitle-name">{username}</div>
               </div>
