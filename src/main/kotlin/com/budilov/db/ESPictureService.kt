@@ -79,30 +79,39 @@ class ESPictureService : DBPictureService {
      */
     override fun search(userId: String, query: String): List<PictureItem> {
         var matchAllQuery = ""
-        var search = null
+        var search: Search? = null
 
         if(query.contains(Properties._BUCKET_URL)) {
-            matchAllQuery = getMatchAllQueryS3BucketURL()
+            matchAllQuery = getMatchAllQueryS3BucketUrl(query)
+            println("query: " + query)
+            println()
             search = Search.Builder(matchAllQuery)
                 // multiple index or types can be added.
                 .addIndex(_DEFAULT_INDEX)
                 .addType(userId)
                 .build()
+            println("reached S3 bucket URL")
+            println()
         }
         else if(query.contains(userId)) {
-            matchAllQuery = getMatchAllQueryUserId()
-            search = Search.Builder(matchAllQuery)
-                // multiple index or types can be added.
-                .addIndex(_DEFAULT_INDEX)
-                .build()
-        }
-        else {
-            matchAllQuery = getMatchAllQueryLabels()
+            matchAllQuery = getMatchAllQueryUserId(query)
             search = Search.Builder(matchAllQuery)
                 // multiple index or types can be added.
                 .addIndex(_DEFAULT_INDEX)
                 .addType(userId)
                 .build()
+            println("reached userID")
+            println()
+        }
+        else {
+            matchAllQuery = getMatchAllQueryLabels(query)
+            search = Search.Builder(matchAllQuery)
+                // multiple index or types can be added.
+                .addIndex(_DEFAULT_INDEX)
+                .addType(userId)
+                .build()
+            println("reached default")
+            println()
         }
 
         val result = client.execute(search)
@@ -131,11 +140,11 @@ class ESPictureService : DBPictureService {
     }
 
     private fun getMatchAllQueryS3BucketUrl(s3BucketUrl: String, pageSize: Int = 30): String {
-        return """{"query": { "match": { "s3BucketUrl": "$s3BucketUrl" } }, "size":$pageSize}"""
+        return """{"query": { "match": { "s3BucketUrl": { "query": "$s3BucketUrl", "cutoff_frequency": 0 } } }, "size":$pageSize}"""
     }
 
     private fun getMatchAllQueryUserId(userId: String, pageSize: Int = 30): String {
-        return """{"query": { "match": { "Mappings": "$userId" } }, "size":$pageSize}"""
+        return """{"query": { "match_all": {} }, "size":$pageSize}"""
     }
 
     private fun getJestFactory(requestInterceptor: AWSSigningRequestInterceptor): JestClientFactory {
