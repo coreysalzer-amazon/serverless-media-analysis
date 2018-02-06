@@ -37,7 +37,10 @@ class AddPhotoLambda : RequestHandler<S3Event, String> {
         logger.log("bucket: ${srcBucket}, key: ${srcKey}")
 
         // Get the cognito id from the object name (it's a prefix)
-        val cognitoId = srcKey.split("/")[1]
+        var cognitoId = srcKey.split("/")[1]
+        if (cognitoId == "private") {
+            cognitoId = srcKey.split("/")[2]
+        }
         logger.log("Cognito ID: ${cognitoId}")
 
         val labels = rekognition.getLabels(srcBucket, srcKey)
