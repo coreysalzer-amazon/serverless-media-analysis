@@ -1,8 +1,8 @@
 #search-value {
 	width: 104%;
-	margin-left: -2%;
-	border-color: #333;
-	font-size: 20px;
+	margin-left: -2% !important;
+	border-color: #333 !important;
+	font-size: 20px !important;
 }
 
 .form-control-feedback, .form-control{

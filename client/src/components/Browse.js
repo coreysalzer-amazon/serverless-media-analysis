@@ -4,6 +4,14 @@ import Loader from './Loader';
 import SearchResults from './SearchResults';
 import AWS from 'aws-sdk';
 import axios from 'axios';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
+import { getFileNameFromURL } from "../utils/utils";
+import $ from 'jquery';
+import '../utils/jquery.autocomplete';
+import '../styles/jquery.autocomplete.css';
+
+
 
 class Browse extends Component {
 	constructor(props) {
@@ -14,11 +22,17 @@ class Browse extends Component {
 
 	componentDidMount() {
 		this.setState({
+			selectedOption: '',
 			allFiles: [],
 			results: [],
 			isLoading: true
 		})
 		this.getAllFiles();
+	}
+
+
+	componentWillUnmount() {
+		$("#search-value").autocomplete('destroy');
 	}
 
 
@@ -38,7 +52,14 @@ class Browse extends Component {
 		    		allFiles: response.data.pictures, 
 		    		results: response.data.pictures,
 		    		isLoading: false
-		    	}); 	
+		    	});
+
+		    	var autoCompleteAllFiles = [];
+		    	self.state.allFiles.forEach(function(result) {
+					autoCompleteAllFiles.push(getFileNameFromURL(result.s3BucketUrl));
+				})
+		    	$("#search-value").autocomplete({source: [autoCompleteAllFiles]}); 	
+		    	$("#search-value").keypress(self.onSearch);
 		    } 
 		    else {
 		    	self.setState({
@@ -55,30 +76,39 @@ class Browse extends Component {
 	}
 
 	onSearch(e) {
-		e.preventDefault();
-		var searchValue = document.getElementById("search-value").value;
+		if(e.keyCode === 13) {
+			e.preventDefault();
+			var searchValue = document.getElementById("search-value").value;
 
-		this.setState({
-			allFiles: this.state.allFiles,
-			results: this.state.allFiles.filter(result => searchValue === result.s3BucketUrl.substring(result.s3BucketUrl.lastIndexOf("/") + 1, result.s3BucketUrl.length)),
-			isLoading: false
-		});
+			this.setState({
+				allFiles: this.state.allFiles,
+				results: this.state.allFiles.filter(result => searchValue === getFileNameFromURL(result.s3BucketUrl)),
+				isLoading: false
+			});
+		}
 	}
-
 
 	render(){
 		var results = [];
+		var autoCompleteAllFiles = [];
 		var isLoading = false;
+		var value = "";
 		if(this.state) { 
+
+			this.state.allFiles.forEach(function(result) {
+				autoCompleteAllFiles.push({ value: getFileNameFromURL(result.s3BucketUrl), label: getFileNameFromURL(result.s3BucketUrl)})
+			})
+
 			results = this.state.results;
 			isLoading = this.state.isLoading;
 		};
 
+
 		return(
 			<div>
 				<form id="search-form" onSubmit={this.onSearch} className="form-inline">
-				    <div className="form-group has-feedback col-xs-offset-1 col-xs-10">
-	                  <input className="form-control col-xs-12" id="search-value" placeholder="Search Files" type="text" />
+				    <div className="ui-widget form-group has-feedback col-xs-offset-1 col-xs-10">
+	                  <input onChange={this.onSearch} className="form-control col-xs-12" id="search-value" placeholder="Search Files" type="text"/>
 	                  <span className="form-control-feedback glyphicon glyphicon-search"></span>
 	                </div>
                 </form>
